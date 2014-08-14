@@ -1,0 +1,23 @@
+Create Project:
+
+android create project --target <target_ID> --name <your_project_name> --path path/to/your/project --activity <your_activity_name> --package <your_package_namespace>
+
+build:
+
+ndk-build
+ant debug
+
+install:
+
+adb -d install -r ./bin/SDLActivity-debug.apk
+
+debug:
+
+monitor.bat
+
+pacman -S nvidia-304xx if from 7xxx series
+
+clean:
+
+ndk-build clean
+ant clean
