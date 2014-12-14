@@ -102,19 +102,24 @@ void lua_init(const char* script)
     L = lua_open();
     luaL_openlibs(L);
 
-    //redirect any lua print statements to the android log function (where we can access them)
+    //create a lua function to print to android log
     lua_pushcfunction(L, lua_print);
 	lua_setglobal(L, "_lua_print");
+
+	//redirect any lua print statements to the android log function
+	//by overriding lua's native print function
 	lua_exec(
 			"print = function(...)\n"
 				"_lua_print(table.concat({...}, '\t'))\n"
 			"end\n"
 			);
 
-	//set a new source for Lua's 'require' function to search. 
-	//This allows Lua to look for lua packages in the project's assets folder.
+	//create a lua function for loading files from the native FS
 	lua_pushcfunction(L, lua_get_script);
 	lua_setglobal(L, "_lua_get_script");
+
+	//set a new source for Lua's 'require' function to search. 
+	//This allows Lua to look for lua packages in the project's assets folder.	
 	lua_exec(
 		"table.insert(package.loaders, 1, function(name) \n"
 		"   local module = _lua_get_script(name .. '.lua')"
